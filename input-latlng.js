@@ -71,7 +71,7 @@ class InputLatLng extends HTMLElement {
     observer.observe(this, config);
 
     // add center cross
-    const png = "https://code4sabae.github.io/input-latlng/crosshairs.png";
+    const png = "https://code4fukui.github.io/input-latlng/crosshairs.png";
     const iconcenter = L.icon({
       iconUrl: png,
       iconRetinaUrl: png,
