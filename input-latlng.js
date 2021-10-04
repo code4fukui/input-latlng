@@ -71,9 +71,10 @@ class InputLatLng extends HTMLElement {
     observer.observe(this, config);
 
     // add center cross
+    const png = "https://code4sabae.github.io/input-latlng/crosshairs.png";
     const iconcenter = L.icon({
-      iconUrl: 'crosshairs.png',
-      iconRetinaUrl: 'crosshairs.png',
+      iconUrl: png,
+      iconRetinaUrl: png,
       iconSize: [ 35, 35 ],
       iconAnchor: [ 17, 17 ],
     })
