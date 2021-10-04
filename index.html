@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>input-latlng tag</title>
+</head>
+<body>
+<h1>input-latlng tag</h1>
+<script type="module" src=./input-latlng.js></script>
+
+<input-latlng id=inplatlng></input-latlng>
+<input id=inplat>
+<input id=inplng>
+<button id=btn1>set Geo3x3</button>
+<button id=btn2>set [lat, lng]</button>
+<button id=btn3>set {lat, lng}</button>
+<hr>
+
+<script type="module">
+onload = () => {
+  inplatlng.onchange = () => {
+    const ll = inplatlng.value;
+    inplat.value = ll.lat;
+    inplng.value = ll.lng;
+  };
+  btn1.onclick = () => {
+    inplatlng.value = "E91387397";
+  };
+  btn2.onclick = () => {
+    inplatlng.value = [35.94352195669658, 136.18863701820376];
+  };
+  btn3.onclick = () => {
+    inplatlng.value = { lat: 36.06521633161721, lng: 136.22171670198443 };
+  };
+};
+</script>
+
+<a href=https://github.com/code4fukui/input-latlng/>src on GitHub</a>
+</body>
+</html>
