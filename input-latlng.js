@@ -35,7 +35,7 @@ class InputLatLng extends HTMLElement {
     const div = this.div;
     const map = this.map;
     div.style.width = this.getAttribute("width") || "100%";
-    div.style.height = this.getAttribute("height") || "60vh";
+    div.style.height = this.getAttribute("height") || "300px";
 
     const getLatLng = (d) => {
       const geo3x3 = this.getAttribute("geo3x3");
