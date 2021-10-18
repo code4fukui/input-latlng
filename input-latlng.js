@@ -28,6 +28,7 @@ class InputLatLng extends HTMLElement {
       attribution: '<a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>"',
       maxZoom: 18,
     }).addTo(map);
+    map.scrollWheelZoom.disable();
 
     link.onload = () => this.init();
   }
