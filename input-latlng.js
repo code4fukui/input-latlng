@@ -34,7 +34,7 @@ class InputLatLng extends HTMLElement {
     link.onload = () => this.init();
 
     if (!this.getAttribute("realtime")) {
-      const ctrl = create("div", this);
+      const ctrl = create("div", this, "control");
       this.inplat = create("input", ctrl);
       this.inplng = create("input", ctrl);
       const btn = create("button", ctrl);
