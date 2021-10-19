@@ -1,5 +1,6 @@
 import L from "https://code4sabae.github.io/leaflet-mjs/leaflet.mjs";
 import { Geo3x3 } from "https://geo3x3.com/Geo3x3.js";
+import { create, setAttributes } from "https://js.sabae.cc/stdcomp.js";
 
 const getMapLink = (ll) => {
   const link = "https://www.google.com/maps/dir/?api=1&destination=" + ll[0] + "," + ll[1];
@@ -7,19 +8,19 @@ const getMapLink = (ll) => {
 };
 
 class InputLatLng extends HTMLElement {
-  constructor (lat, lng) {
+  constructor(opts) { // lat, lng) {
     super();
-    this.lat = lat || 35;
-    this.lng = lng || 135;
+    setAttributes(this, opts);
+
+    this.lat = opts?.lat || 35;
+    this.lng = opts?.lng || 135;
 
     const grayscale = this.getAttribute("grayscale");
 
-    const link = document.createElement("link");
+    const link = create("link", this);
     link.rel = "stylesheet";
     link.href = "https://code4sabae.github.io/leaflet-mjs/" + (grayscale ? "leaflet-grayscale.css" : "leaflet.css");
-    this.appendChild(link);
-    const div = this.div = document.createElement("div");
-    this.appendChild(this.div);
+    const div = this.div = create("div", this);
 
     const map = L.map(div);
     this.map = map;
@@ -31,8 +32,21 @@ class InputLatLng extends HTMLElement {
     map.scrollWheelZoom.disable();
 
     link.onload = () => this.init();
+
+    if (!this.getAttribute("realtime")) {
+      const ctrl = create("div", this);
+      this.inplat = create("input", ctrl);
+      this.inplng = create("input", ctrl);
+      const btn = create("button", ctrl);
+      btn.textContent = "緯度経度セット";
+      btn.onclick = () => {
+        if (this.onchange) {
+          this.onchange();
+        }
+      };
+    }
   }
-  async init () {
+  async init() {
     const div = this.div;
     const map = this.map;
     div.style.width = this.getAttribute("width") || "100%";
@@ -59,6 +73,10 @@ class InputLatLng extends HTMLElement {
     if (ll) {
       const zoom = this.getAttribute("zoom") || 13;
       map.setView(ll, zoom);
+      if (this.inplat) {
+        this.inplat.value = parseFloat(ll[0]).toFixed(5);
+        this.inplng.value = parseFloat(ll[1]).toFixed(5);
+      }
     }
 
     //
@@ -83,9 +101,17 @@ class InputLatLng extends HTMLElement {
     crosshair.addTo(map);
 
     map.on("move", () => {
-      crosshair.setLatLng(map.getCenter());
-      if (this.onchange) {
-        this.onchange();
+      const ll = this.map.getCenter();
+      crosshair.setLatLng(ll);
+      if (this.getAttribute("realtime")) {
+        if (this.onchange) {
+          this.onchange();
+        }
+      } else {
+        if (this.inplat) {
+          this.inplat.value = parseFloat(ll.lat).toFixed(5);
+          this.inplng.value = parseFloat(ll.lng).toFixed(5);
+        }
       }
     });
   }
@@ -94,19 +120,26 @@ class InputLatLng extends HTMLElement {
     if (typeof pos == "string") {
       const ll = Geo3x3.decode(pos);
       if (ll) {
-        this.map.setView([ll.lat, ll.lng], zoom);
+        this._setView([ll.lat, ll.lng], zoom);
         return;
       }
       const ll2 = ll.split(",");
       if (ll2.length >= 2) {
-        this.map.setView([ll2[0], ll2[1]], zoom);
+        this._setView([ll2[0], ll2[1]], zoom);
         return;
       }
       console.log("not supported format: " + pos);
     } else if (Array.isArray(pos)) {
-      this.map.setView([pos[0], pos[1]], zoom);
+      this._setView([pos[0], pos[1]], zoom);
     } else {
-      this.map.setView([pos.lat, pos.lng], zoom);
+      this._setView([pos.lat, pos.lng], zoom);
+    }
+  }
+  _setView(ll, zoom) {
+    this.map.setView(ll, zoom);
+    if (this.inplat) {
+      this.inplat.value = parseFloat(ll[0]).toFixed(5);
+      this.inplng.value = parseFloat(ll[1]).toFixed(5);
     }
   }
   get value() {
