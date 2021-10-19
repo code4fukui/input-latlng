@@ -11,9 +11,11 @@ class InputLatLng extends HTMLElement {
   constructor(opts) { // lat, lng) {
     super();
     setAttributes(this, opts);
+    const ll = opts?.value ? this._parseValue(opts.value) : [];
+    //console.log(ll);
 
-    this.lat = opts?.lat || 35;
-    this.lng = opts?.lng || 135;
+    this.lat = ll[0] || opts?.lat || 35;
+    this.lng = ll[1] || opts?.lng || 135;
 
     const grayscale = this.getAttribute("grayscale");
 
@@ -115,25 +117,28 @@ class InputLatLng extends HTMLElement {
       }
     });
   }
-  set value(pos) {
-    const zoom = 15;
+  _parseValue(pos) {
     if (typeof pos == "string") {
       const ll = Geo3x3.decode(pos);
       if (ll) {
-        this._setView([ll.lat, ll.lng], zoom);
-        return;
+        return [ll.lat, ll.lng];
       }
       const ll2 = ll.split(",");
       if (ll2.length >= 2) {
-        this._setView([ll2[0], ll2[1]], zoom);
-        return;
+        return [ll2[0], ll2[1]];
       }
       console.log("not supported format: " + pos);
+      return null;
     } else if (Array.isArray(pos)) {
-      this._setView([pos[0], pos[1]], zoom);
+      return [pos[0], pos[1]];
     } else {
-      this._setView([pos.lat, pos.lng], zoom);
+      return [pos.lat, pos.lng];
     }
+  }
+  set value(pos) {
+    const zoom = 15;
+    const ll = this._parseValue(pos);
+    this._setView(ll, zoom);
   }
   _setView(ll, zoom) {
     this.map.setView(ll, zoom);
