@@ -142,7 +142,7 @@ class InputLatLng extends HTMLElement {
   }
   _setView(ll, zoom) {
     if (!ll) {
-      return;
+      ll = [35, 135];
     }
     this.map.setView(ll, zoom);
     if (this.inplat) {
