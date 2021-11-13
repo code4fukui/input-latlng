@@ -123,7 +123,7 @@ class InputLatLng extends HTMLElement {
       if (ll) {
         return [ll.lat, ll.lng];
       }
-      const ll2 = ll.split(",");
+      const ll2 = pos.split(",");
       if (ll2.length >= 2) {
         return [ll2[0], ll2[1]];
       }
