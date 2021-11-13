@@ -141,6 +141,9 @@ class InputLatLng extends HTMLElement {
     this._setView(ll, zoom);
   }
   _setView(ll, zoom) {
+    if (!ll) {
+      return;
+    }
     this.map.setView(ll, zoom);
     if (this.inplat) {
       this.inplat.value = parseFloat(ll[0]).toFixed(5);
